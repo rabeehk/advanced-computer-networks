@@ -1,0 +1,10 @@
+/etc/udev/rules.d 
+
+this directory should have a file ib_rules.d with this
+
+KERNEL=="umad*", NAME="infiniband/%k", MODE="0666"
+KERNEL=="issm*", NAME="infiniband/%k", MODE="0666"
+KERNEL=="ucm*", NAME="infiniband/%k", MODE="0666"
+KERNEL=="uverbs*", NAME="infiniband/%k", MODE="0666"
+KERNEL=="ucma", NAME="infiniband/%k", MODE="0666"
+KERNEL=="rdma_cm", NAME="infiniband/%k", MODE="0666"
