@@ -1,0 +1,89 @@
+a. We ran 3 different tests, varying the timeout of the rules which are added to the switches.
+Our first experiment was with timeout 0s - results can be seen in microFlow_ping1.txt - average rtt 0.562ms
+The second experiment was with timeout 2s - results can be seen in microFlow_ping2.txt - average rtt 2.378ms
+The third experiment was with timeout 10s - results can be seen in microFlow_ping3.txt - average rtt 10.82ms
+
+In all cases, the round-trip times for the microFlow controller are faster than the ones for the hub or for
+the learning controller.
+
+b.
+
+*** Ping: testing ping reachability
+h1 -> h2 h3 h4 h5 
+h2 -> h1 h3 h4 h5 
+h3 -> h1 h2 h4 h5 
+h4 -> h1 h2 h3 h5 
+h5 -> h1 h2 h3 h4 
+*** Results: 0% dropped (0/20 lost)
+
+Depending on which ping commands are used, the following flows will be installed
+
+* h1 ping -c1 h2
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6634
+stats_reply (xid=0x9bdb9a2d): flags=none type=1(flow)
+cookie=0, duration_sec=2s, duration_nsec=948000000s, table_id=0, priority=32768, n_packets=2, n_bytes=140, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+cookie=0, duration_sec=2s, duration_nsec=944000000s, table_id=0, priority=32768, n_packets=1, n_bytes=98, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:02,actions=output:2
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6635
+stats_reply (xid=0x56209704): flags=none type=1(flow)
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6636
+stats_reply (xid=0xa38b03a): flags=none type=1(flow)
+
+In this case, only h1 and h2 communicate, so we see flows installed only in switch 1
+
+
+* h1 ping -c1 h5
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6634
+stats_reply (xid=0xe9df1ff8): flags=none type=1(flow)
+cookie=0, duration_sec=6s, duration_nsec=231000000s, table_id=0, priority=32768, n_packets=2, n_bytes=140, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:05,actions=output:3
+cookie=0, duration_sec=6s, duration_nsec=232000000s, table_id=0, priority=32768, n_packets=3, n_bytes=182, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6635
+stats_reply (xid=0xf7b6e64): flags=none type=1(flow)
+cookie=0, duration_sec=11s, duration_nsec=921000000s, table_id=0, priority=32768, n_packets=2, n_bytes=140, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:05,actions=output:2
+cookie=0, duration_sec=11s, duration_nsec=927000000s, table_id=0, priority=32768, n_packets=3, n_bytes=182, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6636
+stats_reply (xid=0x5978faef): flags=none type=1(flow)
+cookie=0, duration_sec=14s, duration_nsec=223000000s, table_id=0, priority=32768, n_packets=2, n_bytes=140, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:05,actions=output:4
+cookie=0, duration_sec=14s, duration_nsec=232000000s, table_id=0, priority=32768, n_packets=3, n_bytes=182, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+
+In this case, h1 and h5 communicate, so we se flows installed in all three switches
+
+* pingall
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6634
+stats_reply (xid=0x1c13d9ff): flags=none type=1(flow)
+cookie=0, duration_sec=4s, duration_nsec=387000000s, table_id=0, priority=32768, n_packets=4, n_bytes=392, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:03,actions=output:3
+cookie=0, duration_sec=4s, duration_nsec=380000000s, table_id=0, priority=32768, n_packets=4, n_bytes=392, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:04,actions=output:3
+cookie=0, duration_sec=4s, duration_nsec=404000000s, table_id=0, priority=32768, n_packets=12, n_bytes=952, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+cookie=0, duration_sec=4s, duration_nsec=400000000s, table_id=0, priority=32768, n_packets=11, n_bytes=910, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:02,actions=output:2
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6635
+stats_reply (xid=0x8f01a489): flags=none type=1(flow)
+cookie=0, duration_sec=17s, duration_nsec=473000000s, table_id=0, priority=32768, n_packets=6, n_bytes=476, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:03,actions=output:2
+cookie=0, duration_sec=17s, duration_nsec=443000000s, table_id=0, priority=32768, n_packets=12, n_bytes=840, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:02,actions=output:1
+cookie=0, duration_sec=17s, duration_nsec=465000000s, table_id=0, priority=32768, n_packets=6, n_bytes=476, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:04,actions=output:2
+cookie=0, duration_sec=17s, duration_nsec=474000000s, table_id=0, priority=32768, n_packets=12, n_bytes=840, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+
+mininet@mininet-vm:~/pox/pox/assignment$ dpctl dump-flows tcp:127.0.0.1:6636
+stats_reply (xid=0x5efa3424): flags=none type=1(flow)
+cookie=0, duration_sec=21s, duration_nsec=84000000s, table_id=0, priority=32768, n_packets=12, n_bytes=952, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:05,actions=output:4
+cookie=0, duration_sec=21s, duration_nsec=103000000s, table_id=0, priority=32768, n_packets=14, n_bytes=1036, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:03,actions=output:2
+cookie=0, duration_sec=21s, duration_nsec=74000000s, table_id=0, priority=32768, n_packets=12, n_bytes=840, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:02,actions=output:1
+cookie=0, duration_sec=21s, duration_nsec=96000000s, table_id=0, priority=32768, n_packets=13, n_bytes=994, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:04,actions=output:3
+cookie=0, duration_sec=21s, duration_nsec=106000000s, table_id=0, priority=32768, n_packets=12, n_bytes=840, idle_timeout=0,hard_timeout=0,dl_dst=00:00:00:00:00:01,actions=output:1
+
+We can observe that in S1 and S2 there is no micro flow for H5. This is due to the fact that when a packet from H5 will arrive to S1, it matches the 
+microflows for H1 and H2 and it will not go into the controller. Thus, no new entry will be added in the mac table.
+
+
+c.
+
+*** Iperf: testing TCP bandwidth between h1 and h5
+waiting for iperf to start up...*** Results: ['1.04 Gbits/sec', '1.04 Gbits/sec']
+
+The throughput is higher than the one from the learning controller experiment, due to the smaller rtt.

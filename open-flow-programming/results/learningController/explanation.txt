@@ -1,0 +1,10 @@
+a. results can be seen in learning_ping1.txt - average time is 27ms; This is a little bit less than the hub controller.
+The difference between this controller and the hub is that, after the 'mac_to_port' dictionary is filled, only the hosts that are endpoints
+of the ping command observe traffic.
+
+b. results can be seen in learning_ping2.txt (34ms) and learning_ping3.txt (34ms). Both results are similar and with about 7ms slower than for the experiment done at a. This is due to the extra two links (SW1 - Sw2 and SW2 - SW3) that are added to the endpoints of the ping.
+
+c.
+
+*** Iperf: testing TCP bandwidth between h1 and h5
+*** Results: ['2.01 Mbits/sec', '2.02 Mbits/sec']

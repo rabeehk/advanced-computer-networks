@@ -1,0 +1,8 @@
+We use the discovery packet in order to be able to identify the switches and the links between them.
+Then we identified the MAC of the host with IP 10.0.0.4 (host 4) and added specific rules for the three switches:
+
+* for s1, it should send packets to s3 if destination is H4
+* s3 should forward only packets to H4
+* s2 should reply to H1 and H2 only through s1
+
+
